@@ -20,7 +20,8 @@
               <h5 class="text-uppercase">Build Your Food Menu</h5>
               <hr>
               <h6>Menu Categories</h6>
-              <a href="#" class="btn btn-success float-right m-1">
+              {% if categories %}
+              <a href="{% url 'accounts:vendor:add_food' %}" class="btn btn-success float-right m-1">
                 <i class="fa fa-plus" aria-hidden="true"></i>
                 Add Food
               </a>
@@ -55,7 +56,13 @@
                   </tr>
                 {% endfor %}
                 </tbody>
-              </table> 
+              </table>
+              {% else %}
+              <h5 class="text-center">No Categories Found</h5>
+              <div class="text-center">
+                <a href="{% url 'accounts:vendor:add_category' %}" class="btn btn-success">Add Category</a>
+              </div>
+              {% endif %} 
             </div>
           </div>
         </div>
