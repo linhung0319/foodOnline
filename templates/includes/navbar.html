@@ -42,7 +42,7 @@
           <div class="login-option">
             {% if user.is_authenticated %}
             <a 
-              href=""
+              href="{% url 'cart' %}"
             >
               <i class="fa fa-shopping-cart text-danger" style="font-size: 20px;"></i>
               <span 
