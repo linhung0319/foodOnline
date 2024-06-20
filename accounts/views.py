@@ -58,7 +58,9 @@ def registerUser(request):
             user.save()
 
             # Send verification email
-            send_verification_email(request, user)
+            mail_subject = "Please activate your account"
+            mail_template = "accounts/emails/account_verification_email.html"
+            send_verification_email(request, user, mail_subject, mail_template)
 
             messages.success(request, "Your account has been created successfully!")
             return redirect("accounts:registerUser")

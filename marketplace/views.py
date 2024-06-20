@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.contrib.auth.decorators import login_required
 from vendor.models import Vendor
 from menu.models import Category, FoodItem
@@ -165,3 +165,28 @@ def delete_cart(request, cart_id):
             "status": "login_required",
             "message": "Please login to continue",
         })
+
+
+def search(request):
+    address = request.GET["address"]
+    latitude = request.GET["lat"]
+    longitude = request.GET["lng"]
+    radius = request.GET["radius"]
+    keyword = request.GET["keyword"]
+
+    # Get vendor ids that has the food item the user is looking for
+    fetch_vendors_by_fooditems = FoodItem.objects.filter(
+        food_title__icontains=keyword, 
+        is_available=True
+        ).values_list("vendor", flat=True)
+    vendors = Vendor.objects.filter(
+        Q(id__in=fetch_vendors_by_fooditems) | 
+        Q(vendor_name__icontains=keyword, is_approved=True, user__is_active=True)
+        )
+    vendor_count = vendors.count()
+
+    context = {
+        "vendors": vendors,
+        "vendor_count": vendor_count,
+    }
+    return render(request, "marketplace/listings.html", context)
