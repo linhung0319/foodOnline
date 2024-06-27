@@ -127,7 +127,7 @@
         var location = response.results[0].formatted_address;
         x.value = location;
         sessionStorage.setItem("current_location", location);
-        window.location = "?lat=" + lat + "$lng=" + lng;
+        window.location = "?lat=" + lat + "&lng=" + lng;
       }
     })
   }

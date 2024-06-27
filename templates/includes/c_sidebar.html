@@ -1,8 +1,8 @@
 <div class="user-account-nav user-account-sidebar">
     <div class="user-nav-list">
       <ul>
-        <li class="active">
-          <a href="restaurant-dashboard.html"
+        <li class="{% if '/customerDashboard/' == request.path or '/customer/' == request.path %}active{% endif %}">
+          <a href="{% url 'accounts:customers:custDashboard' %}"
             ><i class="icon-dashboard3"></i>Dashboard</a
           >
         </li>
@@ -11,8 +11,8 @@
             ><i class="icon-add_shopping_cart"></i>My Orders</a
           >
         </li>
-        <li>
-          <a href="restaurant-menu-builder.html"
+        <li class="{% if '/profile/' in request.path %}active{% endif %}">
+          <a href="{% url 'accounts:customers:cprofile' %}"
             ><i class="icon-build"></i>Profile Settings</a
           >
         </li>
