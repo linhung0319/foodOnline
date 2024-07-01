@@ -19,7 +19,11 @@
               <div id="home" class="tab-pane in active">
                 <div class="menu-itam-holder">
                   <div id="menu-item-list-6272" class="menu-itam-list">
-                    <form action="#" id="billing_address_form">
+                    <form
+                      method="POST"
+                      action="{% url 'orders:place_order' %}" 
+                      id="billing_address_form"
+                    >
                       {% csrf_token %}
                       <div class="row">
                         <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -74,8 +78,7 @@
                 <div class="menu-itam-holder">
                   <div id="menu-item-list-6272" class="menu-itam-list">
                     <ul>
-                      {% if cart_items %}
-                        {% for item in cart_items %}
+                      {% for item in cart_items %}
                         <li id="cart-item-{{item.id}}">
                           <div class="image-holder">
                             <img
@@ -108,12 +111,7 @@
                             <span class="price">${{item.fooditem.price}}</span>
                           </div>
                         </li>
-                        {% endfor %}
-                      {% else %}
-                        <div class="text-center p-5">
-                          <h3>Cart is empty</h3>
-                        </div>
-                      {% endif %}
+                      {% endfor %}
                     </ul>
                   </div>
                   <div>
@@ -144,13 +142,31 @@
                         </span>
                       </li>
 
+                      <!-- Select payment method start -->
+                      <h5>SELECT PAYMENT METHOD</h5>
+                      <div class="payment-method">
+                        <label>
+                          <input 
+                            type="radio" 
+                            name="payment_method" 
+                            value="PayPal"
+                            form="billing_address_form"
+                          >
+                          <img src={% static 'images/PayPal.png' %} alt="PayPal" width="100">
+                        </label>
+                        &emsp;
+                      </div>
+                      <span class="text-danger" id="payment-method-error"></span>
+                      <!-- Select payment method end -->
+
                       <button
                         type="submit"
                         form="billing_address_form"
                         class="btn btn-danger w-100 p-2 mt-3"
+                        onclick="return payMethodConfirm();"
                       >
                         PLACE ORDER
-                    </button>
+                      </button>
                     </ul>
                   </div>
                 </div>
@@ -164,4 +180,27 @@
   </div>
 </div>
 <!-- Main Section End -->
+
+<script>
+  function payMethodConfirm() {
+    var payMethod = $("input[name='payment_method']:checked").val()
+    if(!payMethod){
+      $('#payment-method-error').html("Select Payment Method");
+      return false;
+    } else {
+      var conf = confirm('You have selected ' + payMethod + ' as your payment method.\nClick "OK" to continue.');
+      if(conf == true) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+  }
+
+  $("input[name='payment_method']").on('change', function(){
+    $('#payment-method-error').html("");
+  }) 
+</script>
+
 {% endblock %}
