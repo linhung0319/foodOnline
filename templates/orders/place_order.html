@@ -20,7 +20,39 @@
                 <div class="menu-itam-holder">
                   
                   <div id="menu-item-list-6272" class="menu-itam-list">
-                    
+                    <div class="billing-address">
+                      <div>
+                        <b>{{order.name}}</b>
+                      </div>
+                      <div>
+                        {{order.address}}
+                      </div>
+                      <div>
+                        {{order.city}} - {{order.pin_code}}
+                      </div>
+                      <div>
+                        {{order.state}}, {{order.country}}
+                      </div>
+                      <div>
+                        Phone: <b>{{order.phone}}</b>
+                      </div>
+                      <div>
+                        Email: <b>{{order.email}}</b>
+                      </div>
+                      <div>
+                        Payment: <b>{{order.payment_method}}</b>
+                      </div>
+                      <br>
+                      <div>
+                        <a 
+                          href="{% url 'checkout' %}" 
+                          class="btn btn-outline-danger"
+                        >
+                          Edit
+                        </a>
+                      </div>
+                      <br>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -42,6 +74,18 @@
               <div id="home" class="tab-pane in active">
                 <div class="menu-itam-holder">
                   <div>
+                    <table class="table">
+                      <tbody>
+                        {% for item in cart_items %}
+                        <tr>
+                          <td><img src="{{item.fooditem.image.url}}" width="40" alt="Food Image"></td>
+                          <td><b>{{item.fooditem}}</b></td>
+                          <td>{{item.quantity}}</td>
+                          <td>${{item.fooditem.price}}</td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
                     <ul>
                       <li style="list-style-type: none;">
                         Subtotal
@@ -69,12 +113,8 @@
                         </span>
                       </li>
 
-                      <a 
-                        href="{% url 'checkout' %}" 
-                        class="btn btn-danger w-100 p-2 mt-3"
-                      >
-                        PROCEED TO CHECKOUT
-                      </a>
+                      <!-- Paypal Checkout Button -->
+                      <div id="paypal-button-container"></div>
                     </ul>
                   </div>
                 </div>
@@ -88,4 +128,70 @@
   </div>
 </div>
 <!-- Main Section End -->
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie('csrftoken');
+  var grand_total = "{{ grand_total }}";
+  var url = "{% url 'orders:payments' %}";
+  var order_number = {{order.order_number}};
+  
+  // Render the PayPal button into #paypal-button-container
+  paypal.Buttons({
+    createOrder: function (data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: grand_total
+          }
+        }]
+      });
+    },
+
+    onApprove: function (data, actions) {
+      return actions.order.capture().then(function (orderData) {
+        console.log(orderData)
+        var transaction_id = orderData.purchase_units[0].payments.captures[0].id;
+        var status = orderData.status;
+        var payment_method = "Paypal";
+        sendTransaction(transaction_id, payment_method, status);
+            
+      });
+    }
+  }).render('#paypal-button-container');
+
+  // Send the data to payments view to store in the database
+  function sendTransaction(transaction_id, payment_method, status) {
+    $.ajax({
+      type: "POST",
+      url: url,
+      data: {
+        "order_number": order_number,
+        "transaction_id": transaction_id,
+        "payment_method": payment_method,
+        "status": status,
+        "csrfmiddlewaretoken": csrftoken,
+      },
+      success: function(response){
+        console.log(response);
+      }
+    })
+  }
+</script>
+
 {% endblock %}

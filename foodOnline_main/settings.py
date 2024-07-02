@@ -75,6 +75,7 @@ TEMPLATES = [
                 "accounts.context_processors.get_vendor",
                 "accounts.context_processors.get_user_profile",
                 "accounts.context_processors.get_google_api",
+                "accounts.context_processors.get_paypal_client_id",
                 "marketplace.context_processors.get_cart_counter",
                 "marketplace.context_processors.get_cart_amounts",
             ],
@@ -172,3 +173,8 @@ conda_env_path = "C:\\Users\\user\\anaconda3\\envs\\foodOnline"
 os.environ['PATH'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo") + ';' + os.environ['PATH']
 os.environ['PROJ_LIB'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\data\\proj") + ';' + os.environ['PATH']
 GDAL_LIBRARY_PATH = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\gdal.dll")
+
+# Paypal configuration
+PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
