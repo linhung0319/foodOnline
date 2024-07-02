@@ -1,14 +1,18 @@
 import json
 
-from django.shortcuts import render, redirect, HttpResponse
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
+from accounts.utils import send_notification
 from .forms import OrderForm
-from .models import Order, Payment
+from .models import Order, Payment, OrderedFood
 from .utils import generate_order_number
 
 
+@login_required(login_url="accounts:login")
 def place_order(request):
     cart_items = Cart.objects.filter(user=request.user).order_by("created_at")
     cart_count = cart_items.count()
@@ -53,6 +57,7 @@ def place_order(request):
     return render(request, "orders/place_order.html")
 
 
+@login_required(login_url="accounts:login")
 def payments(request):
     # Check if the request is ajax or not
     if request.headers.get("x-requested-with") == "XMLHttpRequest" and request.method == "POST":
@@ -77,14 +82,80 @@ def payments(request):
         order.is_ordered = True
         order.save()
 
-    # Move the cart items to ordered food model
+        # Move the cart items to ordered food model
+        cart_items = Cart.objects.filter(user=request.user)
+        for item in cart_items:
+            ordered_food = OrderedFood()
+            ordered_food.order = order
+            ordered_food.payment = payment
+            ordered_food.user = request.user
+            ordered_food.fooditem = item.fooditem
+            ordered_food.quantity = item.quantity
+            ordered_food.price = item.fooditem.price
+            ordered_food.amount = item.fooditem.price * item.quantity # total amount
+            ordered_food.save()  
 
-    # Send order confirmation email to the customer
+        # Send order confirmation email to the customer
+        mail_subject = "Thank you for ordering with us."
+        mail_template = "orders/order_confirmation_email.html"
+        context = {
+            "user": request.user,
+            "order": order,
+            "to_email": order.email,
+        }
+        send_notification(mail_subject, mail_template, context)
 
-    # Send order received email to the vendor
+        # Send order received email to the vendor
+        mail_subject = "You have received a new order."
+        mail_template = "orders/new_order_received.html"
+        to_emails = []
+        for i in cart_items:
+            if i.fooditem.vendor.user.email not in to_emails:
+                to_emails.append(i.fooditem.vendor.user.email)
+        context = {
+            "order": order,
+            "to_email": to_emails,
+        }
 
-    # Clear the cart if the payment is success
+        send_notification(mail_subject, mail_template, context)
 
-    # Return back to AJAX with the status success or failure
+        # Clear the cart if the payment is success
+        cart_items.delete()
 
+        # Return back to AJAX with the status success or failure
+        response = {
+            "order_number": order_number,
+            "transaction_id": transaction_id,
+        }
+        return JsonResponse(response)
     return HttpResponse("Payments")
+
+
+def order_complete(request):
+    order_number = request.GET.get("order_no")
+    transaction_id = request.GET.get("trans_id")
+    
+    try:
+        order = Order.objects.get(
+            order_number=order_number, 
+            payment__transaction_id=transaction_id,
+            is_ordered=True,
+        )
+        ordered_food = OrderedFood.objects.filter(order=order)
+
+        subtotal = 0
+        for item in ordered_food:
+            subtotal += (item.price * item.quantity)
+        
+        tax_data = json.loads(order.tax_data)
+
+        context = {
+            "order": order,
+            "ordered_food": ordered_food,
+            "subtotal": subtotal,
+            "tax_data": tax_data
+        }
+        return render(request, "orders/order_complete.html", context)
+    except:
+        return redirect("home")
+    
