@@ -112,9 +112,10 @@
                           <span id="total">{{grand_total}}</span>
                         </span>
                       </li>
-
+                      {% if order.payment_method == "PayPal" %}
                       <!-- Paypal Checkout Button -->
                       <div id="paypal-button-container"></div>
+                      {% endif %}
                     </ul>
                   </div>
                 </div>
