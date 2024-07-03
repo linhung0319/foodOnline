@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -186,12 +188,34 @@ def customerDashboard(request):
 def vendorDashboard(request):
     vendor = Vendor.objects.get(user=request.user)
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by("-created_at")
-    recent_orders = orders[:5]
+    recent_orders = orders[:10]
+
+    orders_with_totals = []
+    for order in recent_orders:
+        order_data = {
+            "order": order,
+            "total": order.get_total_by_vendor(request)
+        }
+        orders_with_totals.append(order_data)
+
+    # current month's revenue
+    current_month = datetime.now().month
+    current_month_order = orders.filter(vendors__in=[vendor.id], created_at__month=current_month)
+    current_month_revenue = 0
+    for order in current_month_order:
+        current_month_revenue += order.get_total_by_vendor(request)["grand_total"]
+
+    # Total revenue
+    total_revenue = 0
+    for order in orders:
+        total_revenue += order.get_total_by_vendor(request)["grand_total"]
 
     context = {
         "orders": orders,
         "orders_count": orders.count(),
-        "recent_orders": recent_orders,
+        "recent_orders": orders_with_totals,
+        "current_month_revenue": current_month_revenue,
+        "total_revenue": total_revenue,
     }
     return render(request, "accounts/vendorDashboard.html", context)
 

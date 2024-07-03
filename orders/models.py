@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from accounts.models import User
 from menu.models import FoodItem
@@ -61,6 +63,36 @@ class Order(models.Model):
 
     def order_placed_to(self):
         return ", ".join([str(i) for i in self.vendors.all()])
+    
+    def get_total_by_vendor(self, request):
+        vendor = Vendor.objects.get(user=request.user)
+
+        subtotal = 0
+        tax = 0
+        tax_dict = {}
+        if self.total_data:
+            total_data = json.loads(self.total_data)
+            data = total_data.get(str(vendor.id))
+
+            # Check if data is not empty
+            if data:
+                for key, val in data.items():
+                    subtotal += float(key)
+                    tax_dict.update(val)
+
+                    # Calculate tax
+                    # {'CGST': {'9.00': '6.03'}, 'SGST': {'7.00': '4.69'}}
+                    for i in val:
+                        for j in val[i]:
+                            tax += float(val[i][j])
+        grand_total = subtotal + tax
+
+        context = {
+            "subtotal": subtotal,
+            "tax_dict": tax_dict,
+            "grand_total": grand_total
+        }
+        return context
 
 
 class OrderedFood(models.Model):

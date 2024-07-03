@@ -257,10 +257,37 @@ def order_detail(request, order_number):
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
     
+        order_data = order.get_total_by_vendor(request)
+        subtotal = order_data["subtotal"]
+        tax_dict = order_data["tax_dict"]
+        grand_total = order_data["grand_total"]
+        print(subtotal, tax_dict, grand_total)
         context = {
             "order": order,
             "ordered_food": ordered_food,
+            "subtotal": subtotal,
+            "tax_data": tax_dict,
+            "grand_total": grand_total
         }
         return render(request, "vendor/order_detail.html", context)
     except:
         return redirect("accounts:vendorDashboard")
+
+def my_orders(request):
+    vendor = Vendor.objects.get(user=request.user)
+    orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by("-created_at")
+
+    orders_with_totals = []
+    for order in orders:
+        order_data = {
+            "order": order,
+            "total": order.get_total_by_vendor(request)
+        }
+        orders_with_totals.append(order_data)
+
+    context = {
+        "orders_with_totals": orders_with_totals,
+        "orders_count": orders.count(),
+    }
+
+    return render(request, "vendor/my_orders.html", context)

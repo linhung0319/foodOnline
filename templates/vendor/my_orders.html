@@ -6,13 +6,13 @@
 
 <!-- Main Section Start -->
 <div class="main-section">
-  {% include "customers/cover.html" %}
+  {% include "includes/cover.html" %}
   <div class="page-section account-header buyer-logged-in">
     <div class="container">
       <div class="row">
         <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
           <!-- Load the sidebar here -->
-           {% include "includes/c_sidebar.html" %}
+           {% include "includes/v_sidebar.html" %}
         </div>
         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
           <div class="user-dashboard loader-holder">
@@ -34,25 +34,25 @@
                           </tr>
                         </thead>
                         <tbody>
-                          {% for order in orders %}
+                          {% for order_data in orders_with_totals %}
                           <tr>
                             <td>
                               <b>
                                 <a 
-                                  href="{% url 'accounts:customers:order_detail' order.order_number %}"
+                                  href="{% url 'accounts:vendor:vendor_order_detail' order_data.order.order_number %}"
                                   class="text-dark"
                                 >
-                                  {{order.order_number}}
+                                  {{order_data.order.order_number}}
                                 </a>
                               </b>
                             </td>
-                            <td>{{order.name}}</td>
-                            <td>${{order.total}}</td>
-                            <td>{{order.status}}</td>
-                            <td>{{order.created_at}}</td>
+                            <td>{{order_data.order.name}}</td>
+                            <td>${{order_data.total.grand_total}}</td>
+                            <td>{{order_data.order.status}}</td>
+                            <td>{{order_data.order.created_at}}</td>
                             <td>
                               <a 
-                                href="{% url 'accounts:customers:order_detail' order.order_number %}" 
+                                href="{% url 'accounts:vendor:vendor_order_detail' order_data.order.order_number %}" 
                                 class="btn btn-danger"
                               >
                                 Details
