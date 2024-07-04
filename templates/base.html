@@ -36,9 +36,9 @@
     <script src="{% static 'js/modernizr.js' %}"></script>
     <script src="{% static 'js/bootstrap.js' %}"></script>
 
-    {% if "/profile/" in request.path or "/" == request.path %}
+    <!-- {% if "/profile/" in request.path or "/" == request.path %} -->
     <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete" defer></script>
-    {% endif %}
+    <!-- {% endif %} -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <!-- Include the PayPal JavaScript SDK -->

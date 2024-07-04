@@ -194,6 +194,8 @@ def delete_food(request, pk=None):
     return redirect("accounts:vendor:fooditems_by_category", food.category.id)
 
 
+@login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def opening_hours(request):
     opening_hours = OpeningHour.objects.filter(vendor=get_vendor(request))
     form = OpeningHourForm()
@@ -204,6 +206,8 @@ def opening_hours(request):
     }
     return render(request, "vendor/opening_hours.html", context=context)
 
+@login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def add_opening_hours(request):
     if request.user.is_authenticated:
         if(request.headers.get("x-requested-with") == "XMLHttpRequest" and 
@@ -242,6 +246,8 @@ def add_opening_hours(request):
                         "message": "Invalid request"}
             return JsonResponse(response)
 
+@login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def remove_opening_hours(request, pk=None):
     if request.user.is_authenticated:
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
@@ -252,12 +258,14 @@ def remove_opening_hours(request, pk=None):
             return JsonResponse(response)
 
 
+@login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def order_detail(request, order_number):
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_food = OrderedFood.objects.filter(order=order, fooditem__vendor=get_vendor(request))
     
-        order_data = order.get_total_by_vendor(request)
+        order_data = order.get_total_by_vendor(request.user)
         subtotal = order_data["subtotal"]
         tax_dict = order_data["tax_dict"]
         grand_total = order_data["grand_total"]
@@ -273,6 +281,8 @@ def order_detail(request, order_number):
     except:
         return redirect("accounts:vendorDashboard")
 
+@login_required(login_url="accounts:login")
+@user_passes_test(check_role_vendor)
 def my_orders(request):
     vendor = Vendor.objects.get(user=request.user)
     orders = Order.objects.filter(vendors__in=[vendor.id], is_ordered=True).order_by("-created_at")
@@ -281,7 +291,7 @@ def my_orders(request):
     for order in orders:
         order_data = {
             "order": order,
-            "total": order.get_total_by_vendor(request)
+            "total": order.get_total_by_vendor(request.user)
         }
         orders_with_totals.append(order_data)
 

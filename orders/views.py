@@ -3,6 +3,7 @@ import json
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
 
 from menu.models import FoodItem
 from marketplace.models import Cart, Tax
@@ -128,10 +129,21 @@ def payments(request):
         # Send order confirmation email to the customer
         mail_subject = "Thank you for ordering with us."
         mail_template = "orders/order_confirmation_email.html"
+
+        ordered_foods = OrderedFood.objects.filter(order=order)
+        customer_subtotal = 0
+        for item in ordered_foods:
+            customer_subtotal += (item.price * item.quantity)
+        tax_data = json.loads(order.tax_data)
+
         context = {
             "user": request.user,
             "order": order,
             "to_email": order.email,
+            "ordered_foods": ordered_foods,
+            "domain": get_current_site(request),
+            "customer_subtotal": customer_subtotal,
+            "tax_data": tax_data,
         }
         send_notification(mail_subject, mail_template, context)
 
@@ -142,12 +154,17 @@ def payments(request):
         for i in cart_items:
             if i.fooditem.vendor.user.email not in to_emails:
                 to_emails.append(i.fooditem.vendor.user.email)
-        context = {
-            "order": order,
-            "to_email": to_emails,
-        }
 
-        send_notification(mail_subject, mail_template, context)
+                ordered_food_to_vendor = OrderedFood.objects.filter(order=order, fooditem__vendor=i.fooditem.vendor)
+                order_data = order.get_total_by_vendor(i.fooditem.vendor.user)
+                
+                context = {
+                    "order": order,
+                    "to_email": i.fooditem.vendor.user.email,
+                    "ordered_food_to_vendor": ordered_food_to_vendor,
+                    "order_data": order_data,
+                }
+                send_notification(mail_subject, mail_template, context)
 
         # Clear the cart if the payment is success
         cart_items.delete()
