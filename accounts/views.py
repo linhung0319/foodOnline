@@ -194,7 +194,7 @@ def vendorDashboard(request):
     for order in recent_orders:
         order_data = {
             "order": order,
-            "total": order.get_total_by_vendor(request)
+            "total": order.get_total_by_vendor(request.user)
         }
         orders_with_totals.append(order_data)
 
@@ -203,12 +203,12 @@ def vendorDashboard(request):
     current_month_order = orders.filter(vendors__in=[vendor.id], created_at__month=current_month)
     current_month_revenue = 0
     for order in current_month_order:
-        current_month_revenue += order.get_total_by_vendor(request)["grand_total"]
+        current_month_revenue += order.get_total_by_vendor(request.user)["grand_total"]
 
     # Total revenue
     total_revenue = 0
     for order in orders:
-        total_revenue += order.get_total_by_vendor(request)["grand_total"]
+        total_revenue += order.get_total_by_vendor(request.user)["grand_total"]
 
     context = {
         "orders": orders,

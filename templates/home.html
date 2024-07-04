@@ -7,7 +7,7 @@
   <!-- Home Pages Elements Strat -->
   <!-- Main Search Start -->
   <div
-    class="page-section nopadding cs-nomargin"
+    class="page-section nopadding cs-nomargin main-search-bar"
     style="
       padding-top: 200px;
       padding-bottom: 150px;
@@ -139,14 +139,16 @@
                     ><img
                       src="{{ vendor.user_profile.profile_picture.url }}"
                       class="attachment-full size-full wp-post-image"
-                      alt=""
+                      alt="Profile Picture"
+                      height="125"
                   /></a>
                   {% else %}
                   <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                     ><img
                       src="{% static 'images/default-profile.png' %}"
                       class="attachment-full size-full wp-post-image"
-                      alt=""
+                      alt="Profile Picture"
+                      height="125"
                   /></a>
                   {% endif %}
                 </figure>
@@ -175,7 +177,6 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           <div class="element-title align-center">
             <h2>Choose From Most Popular Restaurants</h2>
-            <p>Cum doctus civibus efficiantur in imperdiet deterruisset.</p>
           </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -191,14 +192,14 @@
                         ><img
                           src="{{ vendor.user_profile.profile_picture.url }}"
                           class="img-thumb wp-post-image"
-                          alt=""
+                          alt="Profile Picture"
                       /></a>
                       {% else %}
                       <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                         ><img
                           src="{% static 'images/default-profile.png' %}"
                           class="img-thumb wp-post-image"
-                          alt=""
+                          alt="Profile Picture"
                       /></a>
                       {% endif %}
                     </figure>
