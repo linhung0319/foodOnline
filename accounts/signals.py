@@ -1,4 +1,5 @@
-from django.db.models.signals import post_save, pre_save
+import os
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from .models import User, UserProfile
 
@@ -14,8 +15,19 @@ def post_save_create_profile_receiver(sender, instance, created, **kwargs):
             # Create the userprofile if not exist
             UserProfile.objects.create(user=instance)
 
-@receiver(pre_save, sender=User)
-def pre_save_profile_receiver(sender, instance, **kwargs):
-    print(instance.username, "This user is being saved")
+# @receiver(pre_save, sender=User)
+# def pre_save_profile_receiver(sender, instance, **kwargs):
+#     print(instance.username, "This user is being saved")
 
-#post_save.connect(post_save_create_profile_receiver, sender=User)
+
+@receiver(pre_delete, sender=UserProfile)
+def pre_delete_profile_receiver(sender, instance, **kwargs):
+    # Delete profile_picture
+    if instance.profile_picture:
+        if os.path.isfile(instance.profile_picture.path):
+            os.remove(instance.profile_picture.path)
+
+    # Delete cover_photo
+    if instance.cover_photo:
+        if os.path.isfile(instance.cover_photo.path):
+            os.remove(instance.cover_photo.path)
