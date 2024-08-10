@@ -174,11 +174,13 @@ DEFAULT_FROM_EMAIL = f"FoodOnline Marketplace <{EMAIL_HOST_USER}>"
 
 GOOGLE_API_KEY = config("GOOGLE_API_KEY")
 
-# conda env path
-conda_env_path = "C:\\Users\\user\\anaconda3\\envs\\foodOnline"
-os.environ['PATH'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo") + ';' + os.environ['PATH']
-os.environ['PROJ_LIB'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\data\\proj") + ';' + os.environ['PATH']
-GDAL_LIBRARY_PATH = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\gdal.dll")
+if DEBUG == True:
+    # conda env path
+    conda_env_path = "C:\\Users\\user\\anaconda3\\envs\\foodOnline"
+    os.environ['PATH'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo") + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\data\\proj") + ';' + os.environ['PATH']
+    GDAL_LIBRARY_PATH = os.path.join(conda_env_path, "Lib\\site-packages\\osgeo\\gdal.dll")
+
 
 # Paypal configuration
 PAYPAL_CLIENT_ID = config("PAYPAL_CLIENT_ID")
