@@ -1,7 +1,4 @@
-{% extends 'base.html' %} 
-{% load static %}
-
-{% block content %}
+{% extends 'base.html' %} {% load static %} {% block content %}
 <!-- Main Section Start -->
 <div class="main-section">
   <!-- Home Pages Elements Strat -->
@@ -40,8 +37,7 @@
                 text-align: center;
               "
             >
-              Ridiculus sociosqu cursus neque cursus curae ante scelerisque
-              vehicula.
+              It is ridiculous that we have to cook our own food.
             </p>
           </div>
         </div>
@@ -51,7 +47,11 @@
               <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-3 col-xs-12">
                   <div class="field-holder">
-                    <input type="text" name="keyword" placeholder="Resturant name or food name" />
+                    <input
+                      type="text"
+                      name="keyword"
+                      placeholder="Resturant name or food name"
+                    />
                   </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
@@ -72,16 +72,30 @@
                             placeholder="All Locations"
                             required
                           />
-                          <input type="hidden" name="lat" value="" id="id_latitude" />
-                          <input type="hidden" name="lng" value="" id="id_longitude" />
+                          <input
+                            type="hidden"
+                            name="lat"
+                            value=""
+                            id="id_latitude"
+                          />
+                          <input
+                            type="hidden"
+                            name="lng"
+                            value=""
+                            id="id_longitude"
+                          />
                         </div>
-                        
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
-                  <select name="radius" id="radius" style="height: 50px;" required>
+                  <select
+                    name="radius"
+                    id="radius"
+                    style="height: 50px"
+                    required
+                  >
                     <option value="" selected>Choose Radius</option>
                     <option value="5" selected>5km</option>
                     <option value="10" selected>10km</option>
@@ -125,9 +139,9 @@
             <p>Explore restaurants, bars, and cafés by locality</p>
           </div>
         </div>
-        <div 
-          class="col-lg-12 col-md-12 col-sm-12 col-xs-12" 
-          style="padding-right: 0 !important; padding-left: 0 !important;"
+        <div
+          class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+          style="padding-right: 0 !important; padding-left: 0 !important"
         >
           <div class="company-logo">
             <ul>
@@ -135,7 +149,8 @@
               <li class="has-border">
                 <figure>
                   {% if vendor.user_profile.profile_picture %}
-                  <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
+                  <a
+                    href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                     ><img
                       src="{{ vendor.user_profile.profile_picture.url }}"
                       class="attachment-full size-full wp-post-image"
@@ -143,7 +158,8 @@
                       height="125"
                   /></a>
                   {% else %}
-                  <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
+                  <a
+                    href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                     ><img
                       src="{% static 'images/default-profile.png' %}"
                       class="attachment-full size-full wp-post-image"
@@ -188,14 +204,16 @@
                   <div class="img-holder">
                     <figure>
                       {% if vendor.user_profile.profile_picture %}
-                      <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
+                      <a
+                        href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                         ><img
                           src="{{ vendor.user_profile.profile_picture.url }}"
                           class="img-thumb wp-post-image"
                           alt="Profile Picture"
                       /></a>
                       {% else %}
-                      <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
+                      <a
+                        href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
                         ><img
                           src="{% static 'images/default-profile.png' %}"
                           class="img-thumb wp-post-image"
@@ -216,27 +234,25 @@
                   <div class="text-holder">
                     <div class="post-title">
                       <h5>
-                        <a href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}">{{ vendor }}</a>
+                        <a
+                          href="{% url 'marketplace:vendor_detail' vendor.vendor_slug %}"
+                          >{{ vendor }}</a
+                        >
                       </h5>
                     </div>
                     <span>
-                      {% if vendor.user_profile.city %}
-                        {{ vendor.user_profile.city }}
-                      {% endif %}
-                      {% if vendor.user_profile.state %}
-                        , {{ vendor.user_profile.state }}
-                      {% endif %}
-                      {% if vendor.user_profile.pin_code %}
-                        , {{ vendor.user_profile.pin_code }}
-                      {% endif %}
+                      {% if vendor.user_profile.city %} {{
+                      vendor.user_profile.city }} {% endif %} {% if
+                      vendor.user_profile.state %} , {{
+                      vendor.user_profile.state }} {% endif %} {% if
+                      vendor.user_profile.pin_code %} , {{
+                      vendor.user_profile.pin_code }} {% endif %}
                     </span>
                     {% if vendor.kms %}
-                      <br>
-                      <span>
-                        <small>
-                          <b>{{vendor.kms}} km </b>away
-                        </small>
-                      </span>
+                    <br />
+                    <span>
+                      <small> <b>{{vendor.kms}} km </b>away </small>
+                    </span>
                     {% endif %}
                   </div>
                 </div>
