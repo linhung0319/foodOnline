@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% load static %} {% block content %}
+{% extends 'base.html' %} 
+{% load static %} 
+{% block content %}
+
 <!-- Main Section Start -->
 <div class="main-section">
   <!-- Home Pages Elements Strat -->
@@ -241,12 +244,15 @@
                       </h5>
                     </div>
                     <span>
-                      {% if vendor.user_profile.city %} {{
-                      vendor.user_profile.city }} {% endif %} {% if
-                      vendor.user_profile.state %} , {{
-                      vendor.user_profile.state }} {% endif %} {% if
-                      vendor.user_profile.pin_code %} , {{
-                      vendor.user_profile.pin_code }} {% endif %}
+                      {% if vendor.user_profile.city %}
+                        {{ vendor.user_profile.city }}
+                      {% endif %}
+                      {% if vendor.user_profile.state %}
+                        , {{ vendor.user_profile.state }}
+                      {% endif %}
+                      {% if vendor.user_profile.pin_code %}
+                        , {{ vendor.user_profile.pin_code }}
+                      {% endif %}
                     </span>
                     {% if vendor.kms %}
                     <br />
