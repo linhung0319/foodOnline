@@ -40,7 +40,7 @@ The location of Google Maps API is restricted to <span style="color: red;">Taiwa
 
     - Distance calculation: When you input your current address, the system automatically calculates the distance between you and the restaurants.
     
-    <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
+    <div style="display: flex; flex-direction: column; gap: 2rem; align-items: center; justify-content: center;">
       <img src="./readme_pic/location_search.PNG" alt="location search" style="width: 70%;">
       <img src="./readme_pic/location_restaurant.PNG" alt="location restaurant" style="width: 70%;">
     </div>
