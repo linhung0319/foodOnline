@@ -11,6 +11,14 @@ The location of Google Maps API is restricted to <span style="color: red;">Taiwa
 
 [Demo Website](https://linhung.online/)
 
+Login as customer:
+ - User : customer@example.com
+ - Password : 0000
+
+Login as vendor:
+ - User : vendor@example.com
+ - Password : 0000
+
 ## Tech Stack
 - Backend: Django
 - Frontend: HTML, CSS, JavaScript, Bootstrap
@@ -90,3 +98,4 @@ The location of Google Maps API is restricted to <span style="color: red;">Taiwa
 If you have any questions or suggestions about this project, feel free to contact me:
 - Email: linhung0319@gmail.com
 - Portfolio: [My Portfolio](https://linhung0319.vercel.app/)
+- Linkedin: [My Linkedin](https://www.linkedin.com/in/hung-lin/)
