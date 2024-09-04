@@ -9,16 +9,6 @@ This is a fully-featured multi-vendor restaurant marketplace website developed u
 
 The location of Google Maps API is restricted to <span style="color: red;">Taiwan</span> only.
 
-[Demo Website](https://linhung.online/)
-
-Login as customer:
- - User : customer@example.com
- - Password : 0000
-
-Login as vendor:
- - User : vendor@example.com
- - Password : 0000
-
 ## Tech Stack
 - Backend: Django
 - Frontend: HTML, CSS, JavaScript, Bootstrap
